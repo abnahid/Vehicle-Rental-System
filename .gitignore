@@ -12,3 +12,5 @@ yarn.lock
 .pnp.js
 coverage
 .cache
+.vercel
+.env*.local
