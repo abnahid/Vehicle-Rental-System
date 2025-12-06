@@ -41,12 +41,6 @@ export const getAllUsersController = async (
   }
 };
 
-/**
- * UPDATE USER CONTROLLER
- * Endpoint: PUT /api/v1/users/:userId
- * Access: Admin or Own user
- * Description: Admin can update any user, customer can update own profile
- */
 export const updateUserController = async (
   req: Request,
   res: Response
@@ -62,8 +56,7 @@ export const updateUserController = async (
 
     const userId = parseInt(req.params.userId, 10);
 
-    // Authorization: Admin or own user
-    if (req.user.role !== "admin" && req.user.id !== String(userId)) {
+    if (req.user.role !== "admin" && req.user.id !== userId) {
       res.status(403).json({
         success: false,
         message: "You can only update your own profile",
@@ -73,7 +66,6 @@ export const updateUserController = async (
 
     const { name, email, phone, role } = req.body;
 
-    // Validation: At least one field to update
     if (!name && !email && !phone && !role) {
       res.status(400).json({
         success: false,
@@ -83,17 +75,13 @@ export const updateUserController = async (
       return;
     }
 
-    // Validation: If role provided, only admin can change it
+    // Non-admins cannot change roles
+    let finalRole = role;
     if (role && req.user.role !== "admin") {
-      res.status(403).json({
-        success: false,
-        message: "Only admins can change user roles",
-      });
-      return;
+      finalRole = undefined; // Ignore role field for non-admins
     }
 
-    // Validation: If role provided, check it's valid
-    if (role && !["admin", "customer"].includes(role)) {
+    if (finalRole && !["admin", "customer"].includes(finalRole)) {
       res.status(400).json({
         success: false,
         message: "Role must be either 'admin' or 'customer'",
@@ -101,7 +89,6 @@ export const updateUserController = async (
       return;
     }
 
-    // Validation: If email provided, check format
     if (email) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
@@ -113,12 +100,11 @@ export const updateUserController = async (
       }
     }
 
-    // Call service
     const result = await updateUserService(userId, {
       name,
       email,
       phone,
-      role,
+      role: finalRole,
     });
 
     res.status(200).json(result);
@@ -133,12 +119,6 @@ export const updateUserController = async (
   }
 };
 
-/**
- * DELETE USER CONTROLLER
- * Endpoint: DELETE /api/v1/users/:userId
- * Access: Admin only
- * Description: Delete user (only if no active bookings exist)
- */
 export const deleteUserController = async (
   req: Request,
   res: Response
@@ -152,7 +132,6 @@ export const deleteUserController = async (
       return;
     }
 
-    // Authorization: Admin only
     if (req.user.role !== "admin") {
       res.status(403).json({
         success: false,
@@ -185,12 +164,6 @@ export const deleteUserController = async (
   }
 };
 
-/**
- * GET USER BY ID CONTROLLER
- * Endpoint: GET /api/v1/users/:userId
- * Access: Admin or Own user
- * Description: View specific user details
- */
 export const getUserByIdController = async (
   req: Request,
   res: Response
@@ -206,8 +179,7 @@ export const getUserByIdController = async (
 
     const userId = parseInt(req.params.userId, 10);
 
-    // Authorization: Admin or own user
-    if (req.user.role !== "admin" && req.user.id !== String(userId)) {
+    if (req.user.role !== "admin" && req.user.id !== userId) {
       res.status(403).json({
         success: false,
         message: "You can only view your own profile",

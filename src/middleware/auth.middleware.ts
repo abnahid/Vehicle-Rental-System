@@ -1,12 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
-// Extend Express Request type to include user data
 declare global {
   namespace Express {
     interface Request {
       user?: {
-        id: string;
+        id: number;
         email: string;
         role: "admin" | "customer";
       };
@@ -39,14 +38,12 @@ export const authenticateToken = (
       });
       return;
     }
-    // Verify the token using the secret key
     const decoded = jwt.verify(token, secret) as {
-      id: string;
+      id: number;
       email: string;
       role: "admin" | "customer";
     };
 
-    // Attach user info to the request object
     req.user = decoded;
     next();
   } catch (error) {

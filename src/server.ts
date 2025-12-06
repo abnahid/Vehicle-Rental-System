@@ -2,14 +2,15 @@ import dotenv from "dotenv";
 import express, { Express, Request, Response } from "express";
 import authRoutes from "./modules/auth/routes/auth.routes.js";
 import usersRoutes from "./modules/users/routes/users.routes.js";
+import vehiclesRoutes from "./modules/vehicles/routes/vehicles.routes.js";
 
 dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 app.get("/", (req: Request, res: Response) => {
   res.json({
@@ -21,6 +22,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", usersRoutes);
+app.use("/api/v1/vehicles", vehiclesRoutes);
 
 app.use((req: Request, res: Response) => {
   res.status(404).json({

@@ -3,9 +3,9 @@ import pool from "../../../database/connection.js";
 export const getAllUsersService = async () => {
   try {
     const query = `
-      SELECT id, name, email, phone, role, created_at, updated_at
+      SELECT id, name, email, phone, role
       FROM users
-      ORDER BY created_at DESC
+      ORDER BY id DESC
     `;
 
     const result = await pool.query(query);
@@ -66,7 +66,7 @@ export const updateUserService = async (
       UPDATE users
       SET ${fields.join(", ")}
       WHERE id = $${paramCount}
-      RETURNING id, name, email, phone, role, created_at, updated_at
+      RETURNING id, name, email, phone, role
     `;
 
     const result = await pool.query(query, values);
@@ -105,7 +105,7 @@ export const deleteUserService = async (userId: number) => {
     const deleteQuery = `
       DELETE FROM users
       WHERE id = $1
-      RETURNING id, name, email
+      RETURNING id
     `;
 
     const result = await pool.query(deleteQuery, [userId]);
@@ -117,7 +117,6 @@ export const deleteUserService = async (userId: number) => {
     return {
       success: true,
       message: "User deleted successfully",
-      data: result.rows[0],
     };
   } catch (error) {
     throw error;
@@ -127,7 +126,7 @@ export const deleteUserService = async (userId: number) => {
 export const getUserByIdService = async (userId: number) => {
   try {
     const query = `
-      SELECT id, name, email, phone, role, created_at, updated_at
+      SELECT id, name, email, phone, role
       FROM users
       WHERE id = $1
     `;

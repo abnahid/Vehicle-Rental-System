@@ -6,7 +6,7 @@ export const signupController = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { name, email, password, phone, role } = req.body;
+    const { name, email, password, phone } = req.body;
 
     if (!name || !email || !password || !phone) {
       res.status(400).json({
@@ -33,20 +33,12 @@ export const signupController = async (
       return;
     }
 
-    if (role && !["admin", "customer"].includes(role)) {
-      res.status(400).json({
-        success: false,
-        message: "Role must be either 'admin' or 'customer'",
-      });
-      return;
-    }
-
     const result = await signupService({
       name: name.trim(),
       email: email.trim(),
       password,
       phone: phone.trim(),
-      role: role || "customer",
+      role: "customer",
     });
 
     res.status(201).json(result);
