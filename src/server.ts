@@ -341,13 +341,11 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-// Serve the OpenAPI spec as JSON
 app.get("/api-spec.json", (req: Request, res: Response) => {
   res.setHeader("Content-Type", "application/json");
   res.json(swaggerSpec);
 });
 
-// Serve Swagger UI HTML
 app.get("/docs", (req: Request, res: Response) => {
   res.setHeader("Content-Type", "text/html");
   res.sendFile(path.join(__dirname, "docs", "swagger.html"));

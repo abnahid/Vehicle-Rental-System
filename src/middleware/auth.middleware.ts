@@ -88,7 +88,6 @@ export const authorizeAdminOrOwn = (resourceOwnerId: string) => {
       return;
     }
 
-    // Allow if admin or if user is accessing their own resource
     if (
       req.user.role === "admin" ||
       req.user.id === parseInt(resourceOwnerId, 10)

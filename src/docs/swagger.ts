@@ -396,4 +396,114 @@
  *         description: Error fetching vehicle
  */
 
+/**
+ * @swagger
+ * /api/v1/vehicles/{vehicleId}:
+ *   put:
+ *     tags:
+ *       - Vehicles
+ *     summary: Update vehicle
+ *     description: Update vehicle details (Admin only)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: vehicleId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - vehicle_name
+ *               - type
+ *               - registration_number
+ *               - daily_rent_price
+ *               - availability_status
+ *             properties:
+ *               vehicle_name:
+ *                 type: string
+ *                 example: Honda Civic 2024
+ *               type:
+ *                 type: string
+ *                 enum: [car, bike, van, SUV]
+ *                 example: car
+ *               registration_number:
+ *                 type: string
+ *                 example: DHA-4521
+ *               daily_rent_price:
+ *                 type: number
+ *                 example: 55
+ *               availability_status:
+ *                 type: string
+ *                 enum: [available, booked]
+ *                 example: available
+ *     responses:
+ *       200:
+ *         description: Vehicle updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     vehicle_name:
+ *                       type: string
+ *                     type:
+ *                       type: string
+ *                     registration_number:
+ *                       type: string
+ *                     daily_rent_price:
+ *                       type: number
+ *                     availability_status:
+ *                       type: string
+ *       403:
+ *         description: Only admins can update vehicles
+ *       401:
+ *         description: Authentication required
+ *   delete:
+ *     tags:
+ *       - Vehicles
+ *     summary: Delete vehicle
+ *     description: Delete a vehicle (Admin only)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: vehicleId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Vehicle deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *       403:
+ *         description: Only admins can delete vehicles
+ *       401:
+ *         description: Authentication required
+ */
+
 export {};
