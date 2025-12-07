@@ -13,19 +13,12 @@
  *
  *       **HOW TO USE:**
  *       1. Go to POST /api/v1/auth/signin
- *       2. Click on "Login" example in the Request Body
- *       3. Click "Try it out" and "Execute"
- *       4. Copy the "token" from the response
- *       5. For any endpoint requiring authentication:
+ *       2. Click on "Try it out" and "Execute"
+ *       3. Copy the "token" from the response
+ *       4. For any endpoint requiring authentication:
  *          - Click "Authorize" button (top right)
  *          - Paste the token as: Bearer {token}
- *       6. Now you can test all admin-only endpoints
- *
- *       **Admin Can Access:**
- *       - POST /api/v1/vehicles (Add vehicles)
- *       - GET /api/v1/users (View all users)
- *       - PUT /api/v1/users/{id} (Update any user)
- *       - DELETE /api/v1/users/{id} (Delete users)
+ *       5. Now you can test all admin-only endpoints
  *     responses:
  *       200:
  *         description: API is running
@@ -38,7 +31,7 @@
  *     tags:
  *       - Authentication
  *     summary: Register a new user account
- *     description: Creates a new user account with name, email, password, and phone. New users are always created as 'customer' role.
+ *     description: Creates a new user account. New users are always created as 'customer' role.
  *     requestBody:
  *       required: true
  *       content:
@@ -67,31 +60,6 @@
  *     responses:
  *       201:
  *         description: User registered successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: User registered successfully
- *                 data:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: integer
- *                     name:
- *                       type: string
- *                     email:
- *                       type: string
- *                     phone:
- *                       type: string
- *                     role:
- *                       type: string
- *                       example: customer
  *       400:
  *         description: Validation error
  */
@@ -103,7 +71,7 @@
  *     tags:
  *       - Authentication
  *     summary: Login and receive JWT token
- *     description: Authenticates user with email and password, returns JWT token for subsequent requests
+ *     description: Authenticates user with email and password, returns JWT token
  *     requestBody:
  *       required: true
  *       content:
@@ -116,51 +84,13 @@
  *             properties:
  *               email:
  *                 type: string
- *                 example: john@example.com
+ *                 example: maya.t@example.com
  *               password:
  *                 type: string
- *                 example: password123
- *     examples:
- *       Customer Login:
- *         value:
- *           email: john@example.com
- *           password: password123
- *       Admin Login:
- *         value:
- *           email: zara.allen@example.com
- *           password: ZaraSecure456
+ *                 example: MySecurePass99
  *     responses:
  *       200:
  *         description: Login successful
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   type: object
- *                   properties:
- *                     token:
- *                       type: string
- *                       description: JWT token for authentication - use this in Authorization header as "Bearer {token}"
- *                     user:
- *                       type: object
- *                       properties:
- *                         id:
- *                           type: integer
- *                         name:
- *                           type: string
- *                         email:
- *                           type: string
- *                         phone:
- *                           type: string
- *                         role:
- *                           type: string
- *                           enum: [admin, customer]
  *       401:
  *         description: Invalid credentials
  */
@@ -172,36 +102,12 @@
  *     tags:
  *       - Users
  *     summary: Get all users
- *     description: Retrieve all users in the system (Admin only)
+ *     description: Retrieve all users (Admin only)
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Users retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: integer
- *                       name:
- *                         type: string
- *                       email:
- *                         type: string
- *                       phone:
- *                         type: string
- *                       role:
- *                         type: string
  *       403:
  *         description: Only admins can view all users
  *       401:
@@ -215,7 +121,7 @@
  *     tags:
  *       - Users
  *     summary: Get user by ID
- *     description: Retrieve user details (Admin can view any user, customers can view only their own profile)
+ *     description: Retrieve user details (Admin can view any user, customers can view only their own)
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -235,7 +141,7 @@
  *     tags:
  *       - Users
  *     summary: Update user
- *     description: Update user details. Admins can change any field including role. Customers can only update own profile (name, email, phone).
+ *     description: Update user details (Admins can change any field, customers can only update own profile)
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -270,7 +176,7 @@
  *     tags:
  *       - Users
  *     summary: Delete user
- *     description: Delete a user (Admin only, cannot delete if user has active bookings)
+ *     description: Delete a user (Admin only)
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -284,8 +190,6 @@
  *         description: User deleted successfully
  *       403:
  *         description: Only admins can delete users
- *       400:
- *         description: Cannot delete user with active bookings
  *       401:
  *         description: Authentication required
  */
@@ -297,38 +201,10 @@
  *     tags:
  *       - Vehicles
  *     summary: Get all vehicles
- *     description: Retrieve all vehicles in the system (Public endpoint, no authentication required)
+ *     description: Retrieve all vehicles (Public endpoint)
  *     responses:
  *       200:
  *         description: Vehicles retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: integer
- *                       vehicle_name:
- *                         type: string
- *                       type:
- *                         type: string
- *                         enum: [car, bike, van, SUV]
- *                       registration_number:
- *                         type: string
- *                       daily_rent_price:
- *                         type: number
- *                       availability_status:
- *                         type: string
- *                         enum: [available, booked]
  *   post:
  *     tags:
  *       - Vehicles
@@ -392,13 +268,8 @@
  *     responses:
  *       200:
  *         description: Vehicle retrieved successfully
- *       500:
- *         description: Error fetching vehicle
- */
-
-/**
- * @swagger
- * /api/v1/vehicles/{vehicleId}:
+ *       404:
+ *         description: Vehicle not found
  *   put:
  *     tags:
  *       - Vehicles
@@ -427,48 +298,19 @@
  *             properties:
  *               vehicle_name:
  *                 type: string
- *                 example: Honda Civic 2024
  *               type:
  *                 type: string
  *                 enum: [car, bike, van, SUV]
- *                 example: car
  *               registration_number:
  *                 type: string
- *                 example: DHA-4521
  *               daily_rent_price:
  *                 type: number
- *                 example: 55
  *               availability_status:
  *                 type: string
  *                 enum: [available, booked]
- *                 example: available
  *     responses:
  *       200:
  *         description: Vehicle updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: integer
- *                     vehicle_name:
- *                       type: string
- *                     type:
- *                       type: string
- *                     registration_number:
- *                       type: string
- *                     daily_rent_price:
- *                       type: number
- *                     availability_status:
- *                       type: string
  *       403:
  *         description: Only admins can update vehicles
  *       401:
@@ -489,19 +331,145 @@
  *     responses:
  *       200:
  *         description: Vehicle deleted successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   type: object
  *       403:
  *         description: Only admins can delete vehicles
+ *       401:
+ *         description: Authentication required
+ */
+
+/**
+ * @swagger
+ * /api/v1/bookings:
+ *   post:
+ *     tags:
+ *       - Bookings
+ *     summary: Create a new booking
+ *     description: Create a booking for a vehicle. Validates availability and calculates total price.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - vehicle_id
+ *               - rent_start_date
+ *               - rent_end_date
+ *             properties:
+ *               vehicle_id:
+ *                 type: integer
+ *                 example: 2
+ *               rent_start_date:
+ *                 type: string
+ *                 format: date
+ *                 example: "2024-01-15"
+ *               rent_end_date:
+ *                 type: string
+ *                 format: date
+ *                 example: "2024-01-20"
+ *     responses:
+ *       201:
+ *         description: Booking created successfully
+ *       400:
+ *         description: Invalid booking request
+ *       404:
+ *         description: Vehicle not found
+ *       401:
+ *         description: Authentication required
+ *   get:
+ *     tags:
+ *       - Bookings
+ *     summary: Get all bookings
+ *     description: Retrieve bookings. Admins see all, customers see only their own.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Bookings retrieved successfully
+ *       401:
+ *         description: Authentication required
+ */
+
+/**
+ * @swagger
+ * /api/v1/bookings/status/auto-complete:
+ *   get:
+ *     tags:
+ *       - Bookings
+ *     summary: Auto-complete expired bookings
+ *     description: Marks all bookings with passed rent_end_date as "returned" and updates vehicle availability.
+ *     responses:
+ *       200:
+ *         description: Expired bookings processed successfully
+ *       500:
+ *         description: Error processing bookings
+ */
+
+/**
+ * @swagger
+ * /api/v1/bookings/{bookingId}:
+ *   get:
+ *     tags:
+ *       - Bookings
+ *     summary: Get booking by ID
+ *     description: Retrieve booking details. Customers can only view their own bookings.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: bookingId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Booking retrieved successfully
+ *       403:
+ *         description: You can only view your own bookings
+ *       404:
+ *         description: Booking not found
+ *       401:
+ *         description: Authentication required
+ *   put:
+ *     tags:
+ *       - Bookings
+ *     summary: Update booking status
+ *     description: |
+ *       Update booking status.
+ *       - Customers can only cancel their own bookings
+ *       - Admins can mark as "returned" (makes vehicle available) or "cancelled"
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: bookingId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - status
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [cancelled, returned]
+ *                 example: "cancelled"
+ *     responses:
+ *       200:
+ *         description: Booking status updated successfully
+ *       400:
+ *         description: Invalid request
+ *       403:
+ *         description: Not authorized to update this booking
+ *       404:
+ *         description: Booking not found
  *       401:
  *         description: Authentication required
  */

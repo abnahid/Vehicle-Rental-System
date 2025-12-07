@@ -4,6 +4,7 @@ import path from "path";
 import swaggerJsdoc from "swagger-jsdoc";
 import { fileURLToPath } from "url";
 import authRoutes from "./modules/auth/routes/auth.routes.js";
+import bookingsRoutes from "./modules/bookings/routes/bookings.routes.js";
 import usersRoutes from "./modules/users/routes/users.routes.js";
 import vehiclesRoutes from "./modules/vehicles/routes/vehicles.routes.js";
 
@@ -363,6 +364,7 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", usersRoutes);
 app.use("/api/v1/vehicles", vehiclesRoutes);
+app.use("/api/v1/bookings", bookingsRoutes);
 
 app.use((req: Request, res: Response) => {
   res.status(404).json({
