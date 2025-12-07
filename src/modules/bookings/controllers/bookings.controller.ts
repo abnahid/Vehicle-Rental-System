@@ -53,7 +53,6 @@ export const postBookingsController = async (
       return;
     }
 
-    // Check vehicle exists and get daily rate
     const vehicleQuery = `
       SELECT id, vehicle_name, daily_rent_price, availability_status 
       FROM vehicles 
@@ -79,13 +78,11 @@ export const postBookingsController = async (
       return;
     }
 
-    // Calculate total price
     const days = Math.ceil(
       (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
     );
     const total_price = days * vehicle.daily_rent_price;
 
-    // Create booking and update vehicle status
     const result = await postBookingsService({
       customer_id: req.user.id,
       vehicle_id,
@@ -94,7 +91,6 @@ export const postBookingsController = async (
       total_price,
     });
 
-    // Update vehicle availability status
     await pool.query(
       `UPDATE vehicles SET availability_status = 'booked' WHERE id = $1`,
       [vehicle_id]
